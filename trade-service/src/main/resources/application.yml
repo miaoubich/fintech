@@ -1,0 +1,12 @@
+#Fri Aug 14 13:55:45 UTC 2026
+micronaut:
+  application:
+    name: trade-service
+
+kafka:
+  bootstrap:
+    servers: localhost:9092
+
+bitpanda:
+  topics:
+    trades: trades-topic
