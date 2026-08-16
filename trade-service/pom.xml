@@ -6,7 +6,7 @@
 	<groupId>com.miaoubich</groupId>
 	<artifactId>trade-service</artifactId>
 	<version>0.1</version>
-	<packaging>${packaging}</packaging>
+	<packaging>jar</packaging>
 
 	<parent>
 		<groupId>io.micronaut.platform</groupId>
@@ -15,7 +15,6 @@
 	</parent>
 
 	<properties>
-		<packaging>jar</packaging>
 		<jdk.version>25</jdk.version>
 		<release.version>25</release.version>
 		<micronaut.version>4.10.17</micronaut.version>
@@ -50,6 +49,20 @@
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
+			<groupId>io.micronaut.data</groupId>
+			<artifactId>micronaut-data-processor</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.micronaut.sql</groupId>
+			<artifactId>micronaut-jdbc-hikari</artifactId>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>io.micronaut</groupId>
 			<artifactId>micronaut-http-server-netty</artifactId>
 			<scope>compile</scope>
@@ -78,6 +91,12 @@
 			<groupId>org.yaml</groupId>
 			<artifactId>snakeyaml</artifactId>
 			<scope>runtime</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>io.micronaut</groupId>
+			<artifactId>micronaut-inject-java</artifactId>
+			<scope>provided</scope>
 		</dependency>
 
 
@@ -109,7 +128,6 @@
 					<configFile>aot-${packaging}.properties</configFile>
 				</configuration>
 			</plugin>
-
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -125,6 +143,16 @@
 							<version>${micronaut.core.version}</version>
 						</path>
 						<path>
+							<groupId>io.micronaut.data</groupId>
+							<artifactId>micronaut-data-processor</artifactId>
+							<version>${micronaut.data.version}</version>
+						</path>
+						<path>
+							<groupId>io.micronaut.data</groupId>
+							<artifactId>micronaut-data-hibernate-jpa</artifactId>
+							<version>${micronaut.data.version}</version>
+						</path>
+						<path>
 							<groupId>io.micronaut.serde</groupId>
 							<artifactId>micronaut-serde-processor</artifactId>
 							<version>${micronaut.serialization.version}</version>
@@ -135,6 +163,11 @@
 								</exclusion>
 							</exclusions>
 						</path>
+						<path>
+							<groupId>io.micronaut</groupId>
+							<artifactId>micronaut-inject-java</artifactId>
+							<version>${micronaut.version}</version>
+						</path>
 					</annotationProcessorPaths>
 					<compilerArgs>
 						<arg>-Amicronaut.processing.group=com.miaoubich</arg>
@@ -142,8 +175,7 @@
 					</compilerArgs>
 				</configuration>
 			</plugin>
+
 		</plugins>
 	</build>
-
-
 </project>

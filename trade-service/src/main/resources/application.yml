@@ -1,12 +1,43 @@
-#Fri Aug 14 13:55:45 UTC 2026
 micronaut:
   application:
     name: trade-service
 
-kafka:
-  bootstrap:
-    servers: localhost:9092
+datasources:
+  default:
+    url: jdbc:postgresql://localhost:5432/trade-service
+    driverClassName: org.postgresql.Driver
+    username: postgres
+    password: password
+    schema-generate: NONE # Flyway handles DDL
+    dialect: POSTGRES
 
-bitpanda:
+flyway:
+ datasources:
+  default:
+   enabled: true
+   locations: classpath:db/migration
+   baseline-on-migrate: true
+
+jpa:
+  default:
+    properties:
+      hibernate:
+        hbm2ddl:
+          auto: update
+
+kafka:
+ bootstrap:
+  servers: localhost:9092
+ producers:
+  default:
+   acks: all
+   retries: 3
+   enable-idempotence: true
+
+app:
+ outbox:
+  poll-interval: 5s
+  initial-delay: 10s
+ kafka:
   topics:
-    trades: trades-topic
+   trades: trades-events
