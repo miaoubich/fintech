@@ -25,3 +25,22 @@
 - [Micronaut Serialization Jackson Core documentation](https://micronaut-projects.github.io/micronaut-serialization/latest/guide/)
 
 
+
+The trade-service works fine as expected, now let create
+Ledger-service Kafka consumer
+It will:
+Listen to the trade topic
+Deserialize the JSON
+Insert a ledger entry
+Guarantee idempotency using tradeId
+Update balances
+Prevent double‑processing
+If you want, I can generate:
+the full Kafka consumer
+the LedgerEntry entity
+the LedgerRepository
+the idempotency logic
+the balance update logic
+the folder structure
+
+

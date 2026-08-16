@@ -5,18 +5,11 @@ micronaut:
 datasources:
   default:
     url: jdbc:postgresql://localhost:5432/trade-service
-    driverClassName: org.postgresql.Driver
+    driver-class-name: org.postgresql.Driver
     username: postgres
     password: password
-    schema-generate: NONE # Flyway handles DDL
+    schema-generate: NONE
     dialect: POSTGRES
-
-flyway:
- datasources:
-  default:
-   enabled: true
-   locations: classpath:db/migration
-   baseline-on-migrate: true
 
 jpa:
   default:
@@ -26,18 +19,18 @@ jpa:
           auto: update
 
 kafka:
- bootstrap:
-  servers: localhost:9092
- producers:
-  default:
-   acks: all
-   retries: 3
-   enable-idempotence: true
+  bootstrap:
+    servers: localhost:9092
+  producers:
+    default:
+      acks: all
+      retries: 3
+      enable-idempotence: true
 
 app:
- outbox:
-  poll-interval: 5s
-  initial-delay: 10s
- kafka:
-  topics:
-   trades: trades-events
+  outbox:
+    poll-interval: 5s
+    initial-delay: 10s
+  kafka:
+    topics:
+      trades: trades-events

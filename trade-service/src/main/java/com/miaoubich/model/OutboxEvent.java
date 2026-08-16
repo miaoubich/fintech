@@ -17,53 +17,59 @@ import jakarta.persistence.Version;
 
 @Entity
 @Table(name = "outbox_events", indexes = {
-		@Index(name = "idx_outbox_events_processed", columnList = "processed, createdAt"),
-		@Index(name = "idx_outbox_events_aggregate", columnList = "aggregateId") })
+        @Index(name = "idx_outbox_events_processed", columnList = "processed, created_at"),
+        @Index(name = "idx_outbox_events_aggregate", columnList = "aggregate_id")
+})
 public class OutboxEvent {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "outbox_event_seq_gen")
-	@SequenceGenerator(name = "outbox_event_seq_gen", sequenceName = "outbox_events_seq", allocationSize = 50)
-	private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "outbox_event_seq_gen")
+    @SequenceGenerator(
+            name = "outbox_event_seq_gen",
+            sequenceName = "outbox_events_seq",
+            allocationSize = 1
+    )
+    private Long id;
 
-	@Column(nullable = false, length = 100)
-	private String eventType; // TRADE_EXECUTED
+    @Column(name = "event_type", nullable = false, length = 100)
+    private String eventType;
 
-	@Column(nullable = false, length = 100)
-	private String aggregateId; // tradeId
+    @Column(name = "aggregate_id", nullable = false, length = 100)
+    private String aggregateId;
 
-	@Column(nullable = false, length = 100)
-	private String aggregateType;
+    @Column(name = "aggregate_type", nullable = false, length = 100)
+    private String aggregateType;
 
-	@Column(nullable = false, columnDefinition = "jsonb")
-	@JdbcTypeCode(SqlTypes.JSON)
-	private String payload; // JSON of TradeEvent
+    @Column(name = "payload", nullable = false, columnDefinition = "jsonb")
+    @JdbcTypeCode(SqlTypes.JSON)
+    private String payload;
 
-	@Column(nullable = false, updatable = false)
-	private Instant createdAt;
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private Instant createdAt;
 
-	@Column(nullable = false)
-	private boolean processed;
+    @Column(name = "processed", nullable = false)
+    private boolean processed;
 
-	private Instant processedAt;
+    @Column(name = "processed_at")
+    private Instant processedAt;
 
-	@Version
-	private Long version;
+    @Version
+    @Column(name = "version", nullable = false)
+    private Long version;
 
-	public OutboxEvent() {
-	}
+    public OutboxEvent() {
+    }
 
-	public OutboxEvent(String eventType, String aggregateId, String aggregateType, String payload) {
-		super();
-		this.eventType = eventType;
-		this.aggregateId = aggregateId;
-		this.aggregateType = aggregateType;
-		this.payload = payload;
-		this.createdAt = Instant.now();
-		this.processed = false;
-	}
-	
-	public void markAsProcessed() {
+    public OutboxEvent(String eventType, String aggregateId, String aggregateType, String payload) {
+        this.eventType = eventType;
+        this.aggregateId = aggregateId;
+        this.aggregateType = aggregateType;
+        this.payload = payload;
+        this.createdAt = Instant.now();
+        this.processed = false;
+    }
+
+    public void markAsProcessed() {
         this.processed = true;
         this.processedAt = Instant.now();
     }

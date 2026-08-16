@@ -22,6 +22,7 @@
 		<micronaut.aot.packageName>com.miaoubich.aot.generated</micronaut.aot.packageName>
 		<micronaut.runtime>netty</micronaut.runtime>
 		<exec.mainClass>com.miaoubich.TradeApplication</exec.mainClass>
+		<hibernate.version>6.6.49.Final</hibernate.version>
 	</properties>
 
 	<repositories>
@@ -49,6 +50,16 @@
 			<scope>compile</scope>
 		</dependency>
 		<dependency>
+			<groupId>io.micronaut.sql</groupId>
+			<artifactId>micronaut-hibernate-jpa</artifactId>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate.orm</groupId>
+			<artifactId>hibernate-core</artifactId>
+			<version>${hibernate.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>io.micronaut.data</groupId>
 			<artifactId>micronaut-data-processor</artifactId>
 			<scope>provided</scope>
@@ -62,6 +73,7 @@
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
 		</dependency>
+
 		<dependency>
 			<groupId>io.micronaut</groupId>
 			<artifactId>micronaut-http-server-netty</artifactId>
