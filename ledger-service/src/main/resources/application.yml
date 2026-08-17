@@ -1,0 +1,36 @@
+#Mon Aug 17 15:29:39 UTC 2026
+micronaut:
+  application:
+    name: ledger-service
+  server:
+    port: 8082
+
+datasources:
+  default:
+    url: jdbc:postgresql://localhost:5432/ledger-service
+    driver-class-name: org.postgresql.Driver
+    username: postgres
+    password: password
+    schema-generate: NONE
+
+jpa:
+  default:
+    properties:
+      hibernate:
+        hbm2ddl:
+          auto: validate
+
+kafka:
+  bootstrap:
+    servers: localhost:9092
+  consumers:
+    default:
+      auto-offset-reset: earliest
+      enable-auto-commit: false
+
+app:
+  kafka:
+    topics:
+      trades: trades-events
+    consumer:
+      group-id: ledger-service-group
