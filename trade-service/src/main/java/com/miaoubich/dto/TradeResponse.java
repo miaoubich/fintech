@@ -15,7 +15,9 @@ public record TradeResponse(
         BigDecimal quantity,
         BigDecimal price,
         String status,
-        Instant createdAt
+        String asset,
+        Instant createdAt,
+        Instant updatedAt
 ) {
     public static TradeResponse from(Trade trade) {
         return new TradeResponse(
@@ -26,7 +28,9 @@ public record TradeResponse(
                 trade.getQuantity(),
                 trade.getPrice(),
                 trade.getStatus(),
-                trade.getCreatedAt()
+                trade.getAsset(),
+                trade.getCreatedAt(),
+                trade.getUpdatedAt()
         );
     }
 }

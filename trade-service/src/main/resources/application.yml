@@ -9,14 +9,13 @@ datasources:
     username: postgres
     password: password
     schema-generate: NONE
-    dialect: POSTGRES
 
 jpa:
   default:
     properties:
       hibernate:
         hbm2ddl:
-          auto: update
+          auto: validate
 
 kafka:
   bootstrap:

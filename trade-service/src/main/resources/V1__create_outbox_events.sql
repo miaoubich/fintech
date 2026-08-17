@@ -1,3 +1,18 @@
+-- Sequences ensure safe, fast, pre-allocated ID generation so your thread pool never bottlenecks when saving trades.
+-- Partial Indexes (WHERE processed = false) ensure your background scheduler can poll thousands of rows per second 
+-- with zero latency and minimal CPU load on PostgreSQL.
+--If your table has:
+--
+--5 million processed rows
+--20 unprocessed rows
+--Without an index, Postgres scans 5 million rows every 5 seconds just to find 20.
+--
+--With the partial index, Postgres jumps straight to those 20 rows.
+--
+--That is a massive performance difference in production.
+
+
+
 CREATE SEQUENCE IF NOT EXISTS outbox_events_seq
     START WITH 1
     INCREMENT BY 1;

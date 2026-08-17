@@ -36,42 +36,48 @@ public class TradeService {
     }
 
     @Transactional
-    public void executeTrade(TradeEvent tradeEvent) throws IOException {
-    	TradeEvent tradeEventPending = new TradeEvent(
-				tradeEvent.tradeId(),
-				tradeEvent.userId(),
-				tradeEvent.symbol(),
-				tradeEvent.side(),
-				tradeEvent.quantity(),
-				tradeEvent.price(),
-				tradeEvent.asset(),
-				"PENDING",
-				Instant.now()
-		);
-    	
-    	Trade trade = new Trade(
-				tradeEventPending.tradeId(),
-				tradeEventPending.userId(),
-				tradeEventPending.symbol(),
-				tradeEventPending.side(),
-				tradeEventPending.quantity(),
-				tradeEventPending.price(),
-				tradeEventPending.status(),
-				tradeEventPending.timestamp()
-		);
-    	
-    	String payload = serializePayload(tradeEventPending);
-    	
-    	// Create outbox event in the SAME transaction as your business logic
-    	OutboxEvent outboxEvent = new OutboxEvent();
-        outboxEvent.setEventType(TradeEvent.EVENT_TYPE_CREATED);
-        outboxEvent.setAggregateId(tradeEvent.tradeId());
+    public void pendingTrade(TradeEvent tradeEvent) {
+
+        Instant now = Instant.now();
+
+        TradeEvent tradeEventPending = new TradeEvent(
+                tradeEvent.tradeId(),
+                tradeEvent.userId(),
+                tradeEvent.symbol(),
+                tradeEvent.side(),
+                tradeEvent.quantity(),
+                tradeEvent.price(),
+                tradeEvent.asset(),
+                TradeEvent.STATUS_PENDING,   // status in payload
+                now
+        );
+
+        Trade trade = new Trade(
+                tradeEventPending.tradeId(),
+                tradeEventPending.userId(),
+                tradeEventPending.symbol(),
+                tradeEventPending.side(),
+                tradeEventPending.quantity(),
+                tradeEventPending.price(),
+                tradeEventPending.status(),
+                tradeEventPending.asset(),
+                now
+        );
+
+        String payload = serializePayload(tradeEventPending);
+
+        OutboxEvent outboxEvent = new OutboxEvent();
+        outboxEvent.setEventType(TradeEvent.EVENT_TYPE_CREATED);  // event type on outbox
+        outboxEvent.setAggregateId(tradeEventPending.tradeId());
         outboxEvent.setAggregateType(TradeEvent.AGGREGATE_TYPE);
         outboxEvent.setPayload(payload);
-        outboxEvent.setCreatedAt(Instant.now());
+        outboxEvent.setCreatedAt(now);
+        outboxEvent.setProcessed(false);
 
-        outboxEventRepository.save(outboxEvent);
         tradeRepository.save(trade);
+        outboxEventRepository.save(outboxEvent);
+
+        LOG.info("Trade created. tradeId={}", trade.getTradeId());
     }
 
     public List<TradeResponse> getAllTrades() {
@@ -97,4 +103,44 @@ public class TradeService {
 		}
 	}
 
+	@Transactional
+	public void executeTrade(String tradeId) {
+	    Trade trade = tradeRepository.findByTradeId(tradeId)
+	            .orElseThrow(() -> new IllegalArgumentException("Trade not found: " + tradeId));
+
+	    if (!TradeEvent.STATUS_PENDING.equalsIgnoreCase(trade.getStatus())) {
+	        throw new IllegalStateException(
+	                "Only PENDING trades can be executed. Current status: " + trade.getStatus()
+	        );
+	    }
+
+	    trade.setStatus(TradeEvent.EVENT_TYPE_EXECUTED);
+	    tradeRepository.update(trade);
+
+	    TradeEvent executedEvent = new TradeEvent(
+	            trade.getTradeId(),
+	            trade.getUserId(),
+	            trade.getSymbol(),
+	            trade.getSide(),
+	            trade.getQuantity(),
+	            trade.getPrice(),
+	            trade.getAsset(), // asset, if Trade entity does not have it
+	            TradeEvent.EVENT_TYPE_EXECUTED,
+	            Instant.now()
+	    );
+
+	    String payload = serializePayload(executedEvent);
+
+	    OutboxEvent outboxEvent = new OutboxEvent();
+	    outboxEvent.setEventType(TradeEvent.EVENT_TYPE_EXECUTED);
+	    outboxEvent.setAggregateId(trade.getTradeId());
+	    outboxEvent.setAggregateType(TradeEvent.AGGREGATE_TYPE);
+	    outboxEvent.setPayload(payload);
+	    outboxEvent.setCreatedAt(Instant.now());
+	    outboxEvent.setProcessed(false);
+
+	    outboxEventRepository.save(outboxEvent);
+
+	    LOG.info("Trade executed and outbox event created. tradeId={}", tradeId);
+	}
 }

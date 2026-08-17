@@ -8,6 +8,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 
@@ -40,15 +42,21 @@ public class Trade {
 
 	@Column(name = "status", nullable = false)
 	private String status;
+	
+	@Column(name = "asset", nullable = false)
+	private String asset;
 
-	@Column(name = "created_at", nullable = false)
+	@Column(name = "created_at", nullable = false, updatable = false)
 	private Instant createdAt;
+	
+	@Column(name = "updated_at", nullable = false)
+	private Instant updatedAt;
 
 	public Trade() {
 	}
 
 	public Trade(String tradeId, String userId, String symbol, String side, BigDecimal quantity, BigDecimal price,
-			String status, Instant createdAt) {
+			String status, String asset, Instant createdAt) {
 		this.tradeId = tradeId;
 		this.userId = userId;
 		this.symbol = symbol;
@@ -56,7 +64,22 @@ public class Trade {
 		this.quantity = quantity;
 		this.price = price;
 		this.status = status;
+		this.asset = asset;
 		this.createdAt = createdAt;
+	}
+	
+	@PrePersist
+	public void onCreate() {
+	    Instant now = Instant.now();
+	    if (this.createdAt == null) {
+	        this.createdAt = now;
+	    }
+	    this.updatedAt = now;
+	}
+
+	@PreUpdate
+	public void onUpdate() {
+	    this.updatedAt = Instant.now();
 	}
 
 	public Long getId() {
@@ -90,8 +113,21 @@ public class Trade {
 	public String getStatus() {
 		return status;
 	}
+	
+	public void setStatus(String status) {
+	    this.status = status;
+	    this.updatedAt = Instant.now();
+	}
+	
+	public String getAsset() {
+	    return asset;
+	}
 
 	public Instant getCreatedAt() {
 		return createdAt;
+	}
+	
+	public Instant getUpdatedAt() {
+	    return updatedAt;
 	}
 }

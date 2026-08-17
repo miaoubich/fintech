@@ -1,6 +1,5 @@
 package com.miaoubich.controller;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -8,9 +7,11 @@ import com.miaoubich.dto.TradeEvent;
 import com.miaoubich.dto.TradeResponse;
 import com.miaoubich.service.TradeService;
 
+import io.micronaut.http.HttpResponse;
 import io.micronaut.http.annotation.Body;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Get;
+import io.micronaut.http.annotation.Patch;
 import io.micronaut.http.annotation.Post;
 import io.micronaut.http.annotation.QueryValue;
 
@@ -24,8 +25,8 @@ public class TradeController {
     }
 
     @Post
-    public void createTrade(@Body TradeEvent event) throws IOException {
-        tradeService.executeTrade(event);
+    public void createTrade(@Body TradeEvent event) {
+        tradeService.pendingTrade(event);
     }
     
     @Get
@@ -34,6 +35,12 @@ public class TradeController {
                 .map(tradeService::getTradesByUserId)
                 .orElseGet(tradeService::getAllTrades);
 	}
+    
+    @Patch("/{tradeId}/execute")
+    public HttpResponse<Void> executeTrade(String tradeId) {
+        tradeService.executeTrade(tradeId);
+        return HttpResponse.noContent();
+    }
     
     @Get("/health")
     public String healthCheck() {
