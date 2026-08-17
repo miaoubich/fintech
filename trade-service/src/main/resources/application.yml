@@ -1,6 +1,8 @@
 micronaut:
   application:
     name: trade-service
+  server:
+    port: 8081
 
 datasources:
   default:
