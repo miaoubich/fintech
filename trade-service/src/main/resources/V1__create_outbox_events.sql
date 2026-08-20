@@ -42,3 +42,7 @@ CREATE INDEX IF NOT EXISTS idx_outbox_events_unprocessed
 
 CREATE INDEX IF NOT EXISTS idx_outbox_events_aggregate
     ON outbox_events (aggregate_id);
+    
+-- --- Drop tables for cleanup (if needed)
+DROP TABLE public.outbox_events;
+DROP SEQUENCE outbox_events_seq;

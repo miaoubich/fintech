@@ -5,11 +5,13 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.miaoubich.dto.TradeEvent;
 import com.miaoubich.kafka.TradeProducer;
 import com.miaoubich.model.OutboxEvent;
 import com.miaoubich.repository.OutboxEventRepository;
 
 import io.micronaut.scheduling.annotation.Scheduled;
+import io.micronaut.serde.ObjectMapper;
 import jakarta.inject.Singleton;
 import jakarta.transaction.Transactional;
 
@@ -17,15 +19,16 @@ import jakarta.transaction.Transactional;
 public class OutboxPublisher {
 
     private static final Logger LOG = LoggerFactory.getLogger(OutboxPublisher.class);
+    private final ObjectMapper jsonMapper;
     private static final int BATCH_SIZE = 10;
 
     private final OutboxEventRepository repository;
     private final TradeProducer tradeProducer;
 
-    public OutboxPublisher(OutboxEventRepository repository,
-    					   TradeProducer tradeProducer) {
+    public OutboxPublisher(OutboxEventRepository repository, TradeProducer tradeProducer, ObjectMapper jsonMapper) {
         this.repository = repository;
         this.tradeProducer = tradeProducer;
+        this.jsonMapper = jsonMapper;
     }
 
     @Scheduled(fixedDelay = "${app.outbox.poll-interval:5s}",
@@ -44,10 +47,8 @@ public class OutboxPublisher {
 
         for (OutboxEvent event : pendingEvents) {
             try {
-                tradeProducer.send(event.getAggregateId(),
-                		           event.getPayload(),
-                		           event.getEventType(),
-                		           event.getAggregateType());
+            	TradeEvent tradeEvent = jsonMapper.readValue(event.getPayload(), TradeEvent.class);
+                tradeProducer.send(event.getAggregateId(), tradeEvent);
                 
                 event.markAsProcessed();
                 repository.update(event);

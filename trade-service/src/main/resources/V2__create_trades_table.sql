@@ -15,10 +15,18 @@ CREATE TABLE trades (
     price NUMERIC(38, 18) NOT NULL,
 
     status VARCHAR(50) NOT NULL,
+    
+    asset VARCHAR(255),
 
-    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
 CREATE INDEX idx_trades_trade_id ON trades(trade_id);
 CREATE INDEX idx_trades_user_id ON trades(user_id);
 CREATE INDEX idx_trades_created_at ON trades(created_at);
+
+--- --- Drop tables for cleanup (if needed)
+DROP TABLE trades;
+DROP SEQUENCE trades_seq;
