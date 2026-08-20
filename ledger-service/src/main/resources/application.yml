@@ -8,13 +8,16 @@ micronaut:
 datasources:
   default:
     url: jdbc:postgresql://localhost:5432/ledger-service
-    driver-class-name: org.postgresql.Driver
+    driverClassName: org.postgresql.Driver
     username: postgres
     password: password
     schema-generate: NONE
+    dialect: POSTGRES
 
 jpa:
   default:
+    entity-scan:
+      packages: com.miaoubich.ledger.model
     properties:
       hibernate:
         hbm2ddl:

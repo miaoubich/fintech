@@ -55,3 +55,11 @@ CREATE TABLE account_balances (
 );
 
 CREATE INDEX idx_account_balances_user_id ON account_balances(user_id);
+
+--- Drop tables for cleanup (if needed)
+DROP TABLE IF EXISTS ledger_entries CASCADE;
+DROP TABLE IF EXISTS account_balances CASCADE;
+DROP TABLE IF EXISTS processed_trades CASCADE;
+
+DROP SEQUENCE IF EXISTS ledger_entries_seq;
+DROP SEQUENCE IF EXISTS account_balances_seq;

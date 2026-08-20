@@ -2,9 +2,9 @@ package com.miaoubich.ledger;
 
 import io.micronaut.runtime.Micronaut;
 
-public class Application {
+public class LadgerApplication {
 
     public static void main(String[] args) {
-        Micronaut.run(Application.class, args);
+        Micronaut.run(LadgerApplication.class, args);
     }
 }

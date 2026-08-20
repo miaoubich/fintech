@@ -7,7 +7,8 @@ import java.time.Instant;
 
 @Serdeable
 public record TradeEvent(
-        String tradeId,
+        
+		String tradeId,
         String userId,
         String symbol,
         String side,

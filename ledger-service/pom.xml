@@ -3,7 +3,7 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	
+
 	<groupId>com.miaoubich.ledger</groupId>
 	<artifactId>ledger-service</artifactId>
 	<version>0.1</version>
@@ -22,7 +22,7 @@
 		<micronaut.aot.enabled>false</micronaut.aot.enabled>
 		<micronaut.aot.packageName>com.miaoubich.aot.generated</micronaut.aot.packageName>
 		<micronaut.runtime>netty</micronaut.runtime>
-		<exec.mainClass>com.miaoubich.TradeApplication</exec.mainClass>
+		<exec.mainClass>com.miaoubich.ledger.LadgerApplication</exec.mainClass>
 		<hibernate.version>6.6.49.Final</hibernate.version>
 	</properties>
 
@@ -69,6 +69,21 @@
 			<artifactId>postgresql</artifactId>
 			<scope>runtime</scope>
 		</dependency>
+
+		<!-- Required for application.yml parsing (Micronaut 4.7+) -->
+		<dependency>
+			<groupId>org.yaml</groupId>
+			<artifactId>snakeyaml</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+
+		<!-- Slf4j -->
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+		
 	</dependencies>
 
 	<build>
@@ -91,6 +106,11 @@
 						<path>
 							<groupId>io.micronaut.data</groupId>
 							<artifactId>micronaut-data-processor</artifactId>
+							<version>${micronaut.data.version}</version>
+						</path>
+						<path>
+							<groupId>io.micronaut.data</groupId>
+							<artifactId>micronaut-data-hibernate-jpa</artifactId>
 							<version>${micronaut.data.version}</version>
 						</path>
 						<path>
