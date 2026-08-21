@@ -1,7 +1,7 @@
 package com.miaoubich.ledger.kafka;
 
 import com.miaoubich.ledger.dto.TradeEvent;
-import com.miaoubich.ledger.service.LedgerService;
+import com.miaoubich.ledger.service.EventProcessService;
 import io.micronaut.configuration.kafka.annotation.KafkaKey;
 import io.micronaut.configuration.kafka.annotation.KafkaListener;
 import io.micronaut.configuration.kafka.annotation.OffsetReset;
@@ -19,9 +19,9 @@ public class TradeEventConsumer {
 
     private static final Logger LOG = LoggerFactory.getLogger(TradeEventConsumer.class);
 
-    private final LedgerService ledgerService;
+    private final EventProcessService ledgerService;
 
-    public TradeEventConsumer(LedgerService ledgerService) {
+    public TradeEventConsumer(EventProcessService ledgerService) {
         this.ledgerService = ledgerService;
     }
 

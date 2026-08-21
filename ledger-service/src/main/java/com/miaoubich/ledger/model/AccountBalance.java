@@ -44,7 +44,7 @@ public class AccountBalance {
     public AccountBalance() {
     }
 
-    public AccountBalance(String userId, String symbol) {
+	public AccountBalance(String userId, String symbol) {
         this.userId = userId;
         this.symbol = symbol;
         this.positionQuantity = BigDecimal.ZERO;
