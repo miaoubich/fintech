@@ -39,18 +39,8 @@ public class TradeService {
     public void pendingTrade(TradeEvent tradeEvent) {
 
         Instant now = Instant.now();
-
-        TradeEvent tradeEventPending = new TradeEvent(
-                tradeEvent.tradeId(),
-                tradeEvent.userId(),
-                tradeEvent.symbol(),
-                tradeEvent.side(),
-                tradeEvent.quantity(),
-                tradeEvent.price(),
-                tradeEvent.asset(),
-                TradeEvent.STATUS_PENDING,   // status in payload
-                now
-        );
+        // status in payload
+        TradeEvent tradeEventPending = tradeEvent.withStatus(TradeEvent.STATUS_PENDING, now);
 
         Trade trade = new Trade(
                 tradeEventPending.tradeId(),
