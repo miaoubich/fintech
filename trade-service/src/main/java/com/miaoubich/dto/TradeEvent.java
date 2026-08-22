@@ -29,7 +29,7 @@ public record TradeEvent(
     public static final String EVENT_TYPE_EXECUTED = "TRADE_EXECUTED";
     public static final String EVENT_TYPE_CANCELLED = "TRADE_CANCELLED";
 
-    public TradeEvent withStatus(String newStatus, Instant newTimestamp) {
+	public TradeEvent withStatus(String newStatus, Instant newTimestamp) {
     	return new TradeEvent(
     			tradeId, userId, symbol, side, quantity, price, asset,
     			newStatus, newTimestamp);
