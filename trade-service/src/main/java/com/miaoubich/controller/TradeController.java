@@ -44,7 +44,7 @@ public class TradeController {
     
     @Get("/health")
     public String healthCheck() {
-		return "Trade service is up and running!";
+		return "Trade Service is up and running!";
 	}
     
 }
